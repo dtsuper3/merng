@@ -1,15 +1,12 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Button, Card, Image } from "semantic-ui-react";
 import moment from "moment";
 import { Link } from "react-router-dom";
+import { AuthContext } from "../context/auth";
+import LikeButton from "./LikeButton"
 
 export default function PostCard({ post: { body, createdAt, id, username, likeCount, commentCount, likes } }) {
-    function likePost() {
-        console.log("liked")
-    }
-    function commentOnPost() {
-
-    }
+    const { user } = useContext(AuthContext);
     return (
         <Card fluid>
             <Card.Content>
@@ -23,22 +20,26 @@ export default function PostCard({ post: { body, createdAt, id, username, likeCo
                 <Card.Description>{body}</Card.Description>
             </Card.Content>
             <Card.Content extra>
+                <LikeButton user={user} post={{ id, likes, likeCount }} />
                 <Button
                     basic
                     labelPosition="right"
-                    onClick={likePost}
-                    color="teal"
-                    icon='heart'
-                    label={{ basic: true, color: 'teal', pointing: 'left', content: likeCount }}
-                />
-                <Button
-                    basic
-                    labelPosition="right"
-                    onClick={commentOnPost}
+                    as={Link}
+                    to={`/posts/${id}`}
                     color="blue"
                     icon="comments"
                     label={{ basic: true, color: 'blue', pointing: 'left', content: commentCount }}
                 />
+                {
+                    user && user.username === username &&
+                    <Button
+                        basic
+                        color="red"
+                        onClick={() => { }}
+                        icon="trash"
+                        floated="right"
+                    />
+                }
             </Card.Content>
         </Card>
     )
